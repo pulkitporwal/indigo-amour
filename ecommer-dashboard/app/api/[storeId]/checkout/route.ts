@@ -4,6 +4,7 @@ import prismadb from "@/lib/prismadb";
 import razorpay from "@/lib/razorpay";
 import { NextResponse } from "next/server";
 import { getCorsHeaders, handlePreflight } from "@/lib/cors";
+import Razorpay from "razorpay";
 
 export async function OPTIONS(req: Request) {
   return handlePreflight(req);
@@ -44,6 +45,10 @@ export async function POST(
       }
     }
 
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID!,
+      key_secret: process.env.RAZORPAY_KEY_SECRET!,
+    });
     const razorpayOrder = await razorpay.orders.create({
       amount: total * 100,
       currency: "INR",

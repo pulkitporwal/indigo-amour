@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { BillboardColumn } from "./columns";
+import { OrderColumn } from "./columns";
 
 import { Button } from "@/components/ui/button";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
@@ -17,7 +17,7 @@ import axios from "axios";
 import { AlertModal } from "@/components/modal/alert-modal";
 
 interface CellActionProps {
-  data: BillboardColumn;
+  data: OrderColumn;
 }
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -28,20 +28,19 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
   const onCopy = (id: string) => {
     navigator.clipboard.writeText(id);
-    toast.success("Billboard ID Copied");
+    toast.success("Order ID Copied");
   };
 
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(`/api/${params.storeId}/billboards/${data.id}`);
-      router.push(`/${params.storeId}/billboards`);
+      await axios.delete(`/api/${params.storeId}/orders/${data.id}`);
+      router.push(`/${params.storeId}/orders`);
       router.refresh();
-      toast.success("Billboard Deleted Successfully");
+      toast.success("Order Deleted Successfully");
     } catch (error) {
-      toast.error(
-        "Make sure you removed all categories before deleting the billboard."
-      );
+      toast.error("Some Problem in deleting order");
+      console.log(error);
     } finally {
       setLoading(false);
       setOpen(false);
@@ -65,21 +64,10 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() =>
-              router.push(`/${params.storeId}/billboards/${data.id}`)
-            }
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            Update
-          </DropdownMenuItem>
+
           <DropdownMenuItem onClick={() => onCopy(data.id)}>
             <Copy className="mr-2 h-4 w-4" />
             Copy Id
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" />
-            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
